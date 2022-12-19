@@ -2,22 +2,7 @@ from itertools import permutations
 from copy import deepcopy
 from numpy import array
 from fractions import Fraction
-wide_a = []
 s = {"0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉"}
-eq = int(input("Введите количество уравнений: "))
-var = int(input("Введите количество переменных: "))
-for i in range(eq):
-    temp = []
-    for j in range(var):
-        index = ""
-        for l in str(j):
-            index += l
-        temp.append(int(input(f"x{s[str(int(index) + 1)]} = ")))
-    index = ""
-    for l in str(i):
-        index += l
-        temp.append(int(input(f"b{s[str(int(index) + 1)]} = ")))
-    wide_a.append(temp)
 def trans(frac:Fraction) -> str:
     """Преобразует класс переменную класса Fraction в привычный вид
 
@@ -115,45 +100,61 @@ def rang(matrix:list) -> tuple:
                     else:
                         new_minor = deepcopy(minor_before_column)
     return r,strings,columns
-a = [i.copy()[:-1] for i in wide_a]
-r,strings,columns = rang(wide_a)
-if r != rang(a)[0]:
-    print("Решений нет")
-elif r == 0:
-    print("x₁ ∈ ℝ")
-else:
-    free = sorted({i + 1 for i in range(len(wide_a[0]))} - {i + 1 for i in columns})[:-1] #новые свободные члены
-    det_content = [[] for _ in range(r)] #будущая матрица из коэффицентов в миноре наивысшего порядка, не равного нулю
-    prev_a = deepcopy(a) # нужен т.к, удаляя из a элементы, мы нарушим порядок индексков
-    for i in strings: # заполняем определитель
-        for j in columns:
-            det_content[i].append(prev_a[i][j])
-            a[i].remove(prev_a[i][j])
-    for i in strings: # переносим свободные члены в правую часть
-        a[i] = array([wide_a[i][-1]] + [-i for i in a[i]])
-    det = Fraction(check_det(det_content)) #значение минора наивысшего порядка
-    for column in range(len(det_content)): #подставляем столбец свободных членов в минор, согласно правилу Крамера
-        new_det = deepcopy(det_content)
-        for string in range(len(det_content)):
-            new_det[string][column] = a[string].copy()
-        ans = check_det(new_det)/det #список коэффицентов при свободных переменных и начального свободного члена 
-        ans = list(map(trans,ans))
-        for i in range(1, len(ans)): #добавляем свободные переменные к свободным членам
+if __name__ == "__main__":
+    wide_a = [[]]
+    eq = int(input("Введите количество уравнений: "))
+    var = int(input("Введите количество переменных: "))
+    for i in range(eq):
+        temp = []
+        for j in range(var):
             index = ""
-            for j in str(free[i - 1]):
-                index += s[j]
-            ans[i] = ans[i] + "x" + index
-
+            for l in str(j):
+                index += l
+            temp.append(int(input(f"x{s[str(int(index) + 1)]} = ")))
         index = ""
-        for j in str(columns[column]): #добавляем индексы к зависимым пременным
-            index += s[str(int(j) + 1)]
-        for i in range(1,len(ans)): #приводим ответ в более приятный для глаза вид
-            if ans[i][0] != "-":
-                ans[i] = "+ " + ans[i]
-            else:
-                ans[i] = "- " + ans[i][1:]
-            if ans[i][0] == "1":
-                ans[i] = ans[i][1:]
-            
-        ans = " ".join(ans)
-        print(f"x{index} = {ans}")
+        for l in str(i):
+            index += l
+            temp.append(int(input(f"b{s[str(int(index) + 1)]} = ")))
+        wide_a.append(temp)
+    a = [i.copy()[:-1] for i in wide_a]
+    r,strings,columns = rang(wide_a)
+    if r != rang(a)[0]:
+        print("Решений нет")
+    elif r == 0:
+        print("x₁ ∈ ℝ")
+    else:
+        free = sorted({i + 1 for i in range(len(wide_a[0]))} - {i + 1 for i in columns})[:-1] #новые свободные члены
+        det_content = [[] for _ in range(r)] #будущая матрица из коэффицентов в миноре наивысшего порядка, не равного нулю
+        prev_a = deepcopy(a) # нужен т.к, удаляя из a элементы, мы нарушим порядок индексков
+        for i in strings: # заполняем определитель
+            for j in columns:
+                det_content[i].append(prev_a[i][j])
+                a[i].remove(prev_a[i][j])
+        for i in strings: # переносим свободные члены в правую часть
+            a[i] = array([wide_a[i][-1]] + [-i for i in a[i]])
+        det = Fraction(check_det(det_content)) #значение минора наивысшего порядка
+        for column in range(len(det_content)): #подставляем столбец свободных членов в минор, согласно правилу Крамера
+            new_det = deepcopy(det_content)
+            for string in range(len(det_content)):
+                new_det[string][column] = a[string].copy()
+            ans = check_det(new_det)/det #список коэффицентов при свободных переменных и начального свободного члена 
+            ans = list(map(trans,ans))
+            for i in range(1, len(ans)): #добавляем свободные переменные к свободным членам
+                index = ""
+                for j in str(free[i - 1]):
+                    index += s[j]
+                ans[i] = ans[i] + "x" + index
+
+            index = ""
+            for j in str(columns[column]): #добавляем индексы к зависимым пременным
+                index += s[str(int(j) + 1)]
+            for i in range(1,len(ans)): #приводим ответ в более приятный для глаза вид
+                if ans[i][0] != "-":
+                    ans[i] = "+ " + ans[i]
+                else:
+                    ans[i] = "- " + ans[i][1:]
+                if ans[i][0] == "1":
+                    ans[i] = ans[i][1:]
+                
+            ans = " ".join(ans)
+            print(f"x{index} = {ans}")
