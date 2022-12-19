@@ -4,7 +4,7 @@ class Test_equations(unittest.TestCase):
     def test_rang(self):
         self.assertEqual(rang([[1,2],[2,4]]),(1,[0],[0]))
         self.assertEqual(rang([[1,2],[2,4],[3,0]]),(2, [0, 2], [0, 1]))
-        self.assertEqual(rang([[0,0,0,0]]),(1,[0],[0]))
+        self.assertEqual(rang([[0,0,0,0]]),(0,[0],[0]))
     def test_det(self):
         self.assertEqual(check_det([[1,2],[3,4]]),-2)
         self.assertEqual(check_det([[1]]),1)
