@@ -63,7 +63,7 @@ def rang(matrix:list) -> tuple:
         matrix (list): матрица, ранг которой будет подсчитан
 
     Returns:
-        tuple: возвращает кортеж с тремя индексами
+        возвращает кортеж с тремя индексами
         0 - ранг матрицы
         1 - список индексов линейно независимых строк
         2 - список индексов линейно независимых столбцов
@@ -83,7 +83,7 @@ def rang(matrix:list) -> tuple:
                 new_minor[-1].append(matrix[cur_string][column]) #окаймление строкой
                 minor_before_column = deepcopy(new_minor)
             for cur_column in range(len(matrix[0])):
-                if cur_column not in columns :#ищем столбец
+                if cur_column not in columns: #ищем столбец
                     i = 0
                     for string in strings:
                         new_minor[i].append(matrix[string][cur_column]) #окаймление столбцом
@@ -101,9 +101,13 @@ def rang(matrix:list) -> tuple:
                         new_minor = deepcopy(minor_before_column)
     return r,strings,columns
 if __name__ == "__main__":
-    wide_a = [[]]
+    wide_a = [[1,2,3,4],[5,3,4,5],[8,8,6,1]]
     eq = int(input("Введите количество уравнений: "))
+    if eq <= 0:
+        raise ValueError 
     var = int(input("Введите количество переменных: "))
+    if var <= 0:
+        raise ValueError
     for i in range(eq):
         temp = []
         for j in range(var):
@@ -116,6 +120,7 @@ if __name__ == "__main__":
             index += l
             temp.append(int(input(f"b{s[str(int(index) + 1)]} = ")))
         wide_a.append(temp)
+
     a = [i.copy()[:-1] for i in wide_a]
     r,strings,columns = rang(wide_a)
     if r != rang(a)[0]:
