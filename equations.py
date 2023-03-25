@@ -4,7 +4,7 @@ from numpy import array
 from fractions import Fraction
 s = {"0":"₀","1":"₁","2":"₂","3":"₃","4":"₄","5":"₅","6":"₆","7":"₇","8":"₈","9":"₉"}
 def trans(frac:Fraction) -> str:
-    """Преобразует класс переменную класса Fraction в привычный вид
+    """Преобразует переменную класса Fraction в привычный вид
 
     Args:
         frac (Fraction): объект класса Fraction
